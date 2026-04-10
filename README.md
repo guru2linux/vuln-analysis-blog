@@ -5,3 +5,5 @@ A collection of guides on vulnerability analysis, security practices, and DevSec
 ## Articles
 
 - **[How I Analyze Vulnerabilities Using Tenable](./vulnerability-analysis-tenable.md)** — A walkthrough of my real-world workflow for analyzing vulnerabilities using Tenable in a DevSecOps environment.
+
+- **[Metasploit Framework for Vulnerability Analysis & Exploitation](./metasploit-framework-guide.md)** — A comprehensive guide on using Metasploit to validate vulnerabilities, execute exploits, and assess real-world impact during penetration testing.
