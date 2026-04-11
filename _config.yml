@@ -1,0 +1,19 @@
+title: "Vulnerability Analysis Blog"
+description: "A collection of guides on vulnerability analysis, security practices, and DevSecOps"
+url: "https://guru2linux.github.io"
+baseurl: "/vuln-analysis-blog"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
