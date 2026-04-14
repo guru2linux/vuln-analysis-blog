@@ -1,3 +1,10 @@
+---
+title: "Metasploit Framework for Vulnerability Analysis & Exploitation"
+date: 2026-04-09
+layout: default
+description: "Using Metasploit to validate vulnerabilities, execute exploits, and assess real-world impact during penetration testing engagements."
+---
+
 # Metasploit Framework for Vulnerability Analysis & Exploitation
 
 ## Overview

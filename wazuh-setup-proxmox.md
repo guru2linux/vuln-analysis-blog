@@ -2,6 +2,7 @@
 title: "Setting Up Wazuh on a Proxmox Server"
 date: 2026-04-11
 layout: default
+description: "Step-by-step guide to deploying Wazuh on a Proxmox VM for unified security monitoring, vulnerability detection, and compliance auditing."
 ---
 
 # Setting Up Wazuh on a Proxmox Server
@@ -70,14 +71,18 @@ Wazuh can be installed using Docker for easier management. To install Docker:
 1. Follow the official Wazuh installation guide for your setup:
    - [Wazuh All-in-One Installation](https://documentation.wazuh.com/current/deployment-options/all-in-one-deployment.html)
    - [Wazuh Cluster Installation](https://documentation.wazuh.com/current/deployment-options/cluster-deployment.html)
-2. If using Docker, pull the Wazuh Docker image:
+2. If using Docker, clone the official Wazuh Docker repository:
    ```bash
-   docker pull wazuh/wazuh
+   git clone https://github.com/wazuh/wazuh-docker.git -b v4.11.2
+   cd wazuh-docker/single-node
    ```
-3. Run the Wazuh container:
+3. Generate certificates and start the stack:
    ```bash
-   docker run -d --name wazuh -p 1514:1514/udp -p 55000:55000 wazuh/wazuh
+   docker-compose -f generate-indexer-certs.yml run --rm generator
+   docker-compose up -d
    ```
+
+   > **Note:** The single-image `wazuh/wazuh` approach is deprecated. The official Docker deployment uses a multi-container stack (Wazuh manager, indexer, and dashboard) managed via Docker Compose.
 
 ## Step 5: Access the Wazuh Dashboard
 
