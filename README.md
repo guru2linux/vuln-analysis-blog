@@ -2,6 +2,8 @@
 
 A collection of guides on vulnerability analysis, security practices, and DevSecOps.
 
+**Live site:** [https://guru2linux.github.io/vuln-analysis-blog](https://guru2linux.github.io/vuln-analysis-blog)
+
 ## Articles
 
 - **[How I Analyze Vulnerabilities Using Tenable](./vulnerability-analysis-tenable.md)** — A walkthrough of my real-world workflow for analyzing vulnerabilities using Tenable in a DevSecOps environment.
