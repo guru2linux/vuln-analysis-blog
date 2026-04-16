@@ -35,4 +35,16 @@ Practical guides on vulnerability analysis, penetration testing, and DevSecOps w
       <p>Step-by-step deployment of Wazuh on Proxmox for unified security monitoring, vulnerability detection, and compliance auditing.</p>
     </div>
   </li>
+  <li>
+    <div class="article-card">
+      <a href="{{ '/nmap-scanning-guide.html' | relative_url }}">Nmap Scanning Techniques for Vulnerability Reconnaissance</a>
+      <p>A practical walkthrough of using Nmap for network reconnaissance, service enumeration, and vulnerability detection as part of a penetration testing workflow.</p>
+    </div>
+  </li>
+  <li>
+    <div class="article-card">
+      <a href="{{ '/burp-suite-web-testing.html' | relative_url }}">Burp Suite for Web Application Penetration Testing</a>
+      <p>Using Burp Suite to intercept traffic, manually test for OWASP Top 10 vulnerabilities, and validate web application security findings.</p>
+    </div>
+  </li>
 </ul>
