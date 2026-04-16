@@ -6,6 +6,8 @@ baseurl: "/vuln-analysis-blog"
 # Build settings
 markdown: kramdown
 highlighter: rouge
+plugins:
+  - jekyll-seo-tag
 # Exclude from processing
 exclude:
   - Gemfile
