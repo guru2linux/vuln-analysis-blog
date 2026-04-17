@@ -6,6 +6,8 @@ A collection of guides on vulnerability analysis, security practices, and DevSec
 
 ## Articles
 
+- **[Security Analysis of a Python Job Application Tracker](./job-tracker-vuln-analysis.md)** — Applying real-world vulnerability assessment techniques — threat modeling, OWASP mapping, CVSS prioritization — to a personal Python project built with SQLAlchemy, Gmail API, and Dash.
+
 - **[How I Analyze Vulnerabilities Using Tenable](./vulnerability-analysis-tenable.md)** — A walkthrough of my real-world workflow for analyzing vulnerabilities using Tenable in a DevSecOps environment.
 
 - **[Using OWASP Top 10 for Vulnerability Analysis](./owasp-top-10-vulnerability-analysis.md)** — A comprehensive guide on integrating the OWASP Top 10 framework into vulnerability analysis workflows for prioritization, risk assessment, and remediation planning.

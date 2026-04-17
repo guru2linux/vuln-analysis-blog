@@ -13,6 +13,12 @@ Practical guides on vulnerability analysis, penetration testing, and DevSecOps w
 <ul class="article-list">
   <li>
     <div class="article-card">
+      <a href="{{ '/job-tracker-vuln-analysis.html' | relative_url }}">Security Analysis of a Python Job Application Tracker</a>
+      <p>Applying real-world vulnerability assessment techniques — threat modeling, OWASP mapping, CVSS prioritization — to a personal Python project built with SQLAlchemy, Gmail API, and Dash.</p>
+    </div>
+  </li>
+  <li>
+    <div class="article-card">
       <a href="{{ '/vulnerability-analysis-tenable.html' | relative_url }}">How I Analyze Vulnerabilities Using Tenable</a>
       <p>A real-world walkthrough of scanning, triaging, and remediating vulnerabilities with Tenable Vulnerability Management and Nessus.</p>
     </div>
