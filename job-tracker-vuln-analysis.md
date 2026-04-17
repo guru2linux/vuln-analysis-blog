@@ -49,7 +49,7 @@ CSV files   → ingest.py (pandas)       → db.py                   → MySQL
 
 **Threat actors considered:**
 - Attacker with read access to the filesystem (e.g., misconfigured file share, stolen laptop)
-- Attacker with network access to the MySQL host (`192.168.0.50`)
+- Attacker with network access to the MySQL host
 - Attacker who obtains the repository (e.g., accidental public push)
 
 **Primary concerns:**
