@@ -283,7 +283,3 @@ The key takeaways from this analysis:
 5. **Local network ≠ trusted network** — bind services explicitly.
 
 The same methodology used here — threat modeling, OWASP mapping, CVSS-informed prioritization, and concrete remediation steps — applies directly to enterprise vulnerability programs. The scale changes; the framework doesn't.
-
----
-
-*Project source: `/mnt/lee/Code_Projects/ActiveCode/Python/job_application_tracker/`*
