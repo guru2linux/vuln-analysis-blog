@@ -83,7 +83,7 @@ DATABASE_URL = (
 )
 ```
 
-If `DB_HOST` defaults to `192.168.0.50` (as it does in the current code) and that IP is reachable, an attacker with the `.env` file has full database access. If `gmail_token.json` leaks, they have read access to your entire Gmail inbox — including every job offer, salary negotiation, and personal email.
+If `DB_HOST` has a hardcoded default pointing to a real host and that IP is reachable, an attacker with the `.env` file has full database access. If `gmail_token.json` leaks, they have read access to your entire Gmail inbox — including every job offer, salary negotiation, and personal email.
 
 **Remediations:**
 1. Add all three to `.gitignore` immediately:
@@ -113,7 +113,7 @@ If `DB_HOST` defaults to `192.168.0.50` (as it does in the current code) and tha
 The Dash application (`dashboards/app.py`) runs as a standard Flask/Dash server. By default, Dash exposes the app on `0.0.0.0` with no authentication layer. Anyone on the local network who knows the port can view all job application data, including companies, roles, salary stages, and notes.
 
 On a home network this may seem low risk, but consider:
-- The MySQL host is already at a static LAN IP (`192.168.0.50`) — suggesting it's a reachable home server
+- The MySQL host is at a static LAN IP — suggesting it's a reachable home server
 - A guest device or a compromised device on the same network gets full dashboard access
 - If the machine is ever port-forwarded or on a VPN, exposure widens significantly
 
