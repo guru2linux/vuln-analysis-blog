@@ -1,0 +1,11 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# MkDocs
+site/
+
+# OS
+.DS_Store

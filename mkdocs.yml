@@ -1,0 +1,47 @@
+site_name: Vulnerability Analysis Blog
+site_description: A collection of guides on vulnerability analysis, security practices, and DevSecOps
+site_url: https://guru2linux.github.io/vuln-analysis-blog/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Home: index.md
+  - Guides:
+    - Security Analysis of a Python Job Application Tracker: job-tracker-vuln-analysis.md
+    - How I Analyze Vulnerabilities Using Tenable: vulnerability-analysis-tenable.md
+    - Using OWASP Top 10 for Vulnerability Analysis: owasp-top-10-vulnerability-analysis.md
+    - Metasploit Framework Guide: metasploit-framework-guide.md
+    - Setting Up Wazuh on Proxmox: wazuh-setup-proxmox.md
+    - Nmap Scanning Techniques: nmap-scanning-guide.md
+    - Burp Suite Web Testing: burp-suite-web-testing.md
