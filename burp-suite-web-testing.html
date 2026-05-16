@@ -1,0 +1,1346 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A practical guide to using Burp Suite Community and Pro for web application security testing, OWASP Top 10 vulnerability discovery, and manual analysis.">
+      
+      
+      
+        <link rel="canonical" href="https://guru2linux.github.io/vuln-analysis-blog/burp-suite-web-testing.html">
+      
+      
+        <link rel="prev" href="nmap-scanning-guide.html">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Burp Suite for Web Application Penetration Testing - Vulnerability Analysis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/css/style.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#burp-suite-for-web-application-penetration-testing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Vulnerability Analysis Blog" class="md-header__button md-logo" aria-label="Vulnerability Analysis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vulnerability Analysis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Burp Suite for Web Application Penetration Testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="job-tracker-vuln-analysis.html" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Vulnerability Analysis Blog" class="md-nav__button md-logo" aria-label="Vulnerability Analysis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Vulnerability Analysis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="job-tracker-vuln-analysis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security Analysis of a Python Job Application Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vulnerability-analysis-tenable.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How I Analyze Vulnerabilities Using Tenable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="owasp-top-10-vulnerability-analysis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using OWASP Top 10 for Vulnerability Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metasploit-framework-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit Framework Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wazuh-setup-proxmox.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Wazuh on Proxmox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="nmap-scanning-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nmap Scanning Techniques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Burp Suite Web Testing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="burp-suite-web-testing.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Burp Suite Web Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-environment-setup-proxy-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Environment Setup &amp; Proxy Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-traffic-interception-manual-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Traffic Interception &amp; Manual Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-scanning-with-burp-scanner-pro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Scanning with Burp Scanner (Pro)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-manual-vulnerability-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Manual Vulnerability Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Manual Vulnerability Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sql-injection-a032021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Injection (A03:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-site-scripting-a032021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Site Scripting (A03:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broken-access-control-a012021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Broken Access Control (A01:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-failures-a072021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Failures (A07:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssrf-a102021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSRF (A10:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-using-burp-intruder-for-fuzzing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Using Burp Intruder for Fuzzing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-burp-repeater-for-manual-exploitation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Burp Repeater for Manual Exploitation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-reporting-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reporting Findings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-burp-suite-into-the-broader-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integrating Burp Suite Into the Broader Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools &amp; Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-ethical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important Ethical Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-thoughts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Thoughts
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-environment-setup-proxy-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Environment Setup &amp; Proxy Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-traffic-interception-manual-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Traffic Interception &amp; Manual Analysis
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-scanning-with-burp-scanner-pro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Scanning with Burp Scanner (Pro)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-manual-vulnerability-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Manual Vulnerability Testing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 4: Manual Vulnerability Testing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sql-injection-a032021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SQL Injection (A03:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-site-scripting-a032021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-Site Scripting (A03:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#broken-access-control-a012021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Broken Access Control (A01:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-failures-a072021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Failures (A07:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssrf-a102021" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SSRF (A10:2021)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-using-burp-intruder-for-fuzzing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Using Burp Intruder for Fuzzing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-burp-repeater-for-manual-exploitation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Burp Repeater for Manual Exploitation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-reporting-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Reporting Findings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#integrating-burp-suite-into-the-broader-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integrating Burp Suite Into the Broader Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools &amp; Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important-ethical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important Ethical Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#final-thoughts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Thoughts
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="burp-suite-for-web-application-penetration-testing">Burp Suite for Web Application Penetration Testing</h1>
+<h2 id="overview">Overview</h2>
+<p>Burp Suite is the industry-standard tool for web application penetration testing. Where Nmap maps the network layer and Tenable identifies known CVEs, Burp Suite goes deeper into the application layer — intercepting HTTP/S traffic, manipulating requests, fuzzing parameters, and identifying vulnerabilities that automated scanners miss. This guide walks through how I use Burp Suite to find and validate web application vulnerabilities, with direct ties to the OWASP Top 10 categories covered in my earlier post.</p>
+<hr />
+<h2 id="step-1-environment-setup-proxy-configuration">Step 1: Environment Setup &amp; Proxy Configuration</h2>
+<p>Before testing, configure Burp Suite as an intercepting proxy between your browser and the target:</p>
+<ul>
+<li>Burp Suite listens on <code>127.0.0.1:8080</code> by default</li>
+<li>Configure your browser to route traffic through this proxy</li>
+<li>Install the Burp CA certificate to intercept HTTPS traffic without SSL errors</li>
+</ul>
+<p><strong>Setup Steps:</strong>
+1. Launch Burp Suite and navigate to <strong>Proxy &gt; Options</strong>
+2. Confirm the proxy listener is running on <code>127.0.0.1:8080</code>
+3. In your browser, set the HTTP/HTTPS proxy to <code>127.0.0.1:8080</code>
+4. Navigate to <code>http://burpsuite</code> (or <code>http://burp</code>) in your browser
+5. Download and install the Burp CA certificate in your browser's certificate store
+6. Enable <strong>Intercept</strong> under <strong>Proxy &gt; Intercept</strong> to begin capturing traffic</p>
+<p><strong>Recommended Browser Setup:</strong>
+- Use Firefox with the FoxyProxy extension for easy proxy toggling
+- Create a dedicated browser profile for testing to avoid contaminating personal browsing</p>
+<hr />
+<h2 id="step-2-traffic-interception-manual-analysis">Step 2: Traffic Interception &amp; Manual Analysis</h2>
+<p>With the proxy running, browse the target application to build a complete traffic map:</p>
+<ul>
+<li>Walk through every page and feature of the application with intercept off</li>
+<li>Burp automatically populates the <strong>Target &gt; Site Map</strong> as you browse</li>
+<li>Enable intercept selectively to inspect and modify specific requests</li>
+</ul>
+<p><strong>What to Examine in Each Request:</strong>
+- Authentication tokens and session cookies — are they predictable or improperly scoped?
+- Hidden form fields and parameters — often forgotten and under-validated
+- HTTP methods — are <code>PUT</code>, <code>DELETE</code>, and <code>PATCH</code> accepted where they shouldn't be?
+- Request headers — <code>X-Forwarded-For</code>, <code>Referer</code>, <code>Origin</code> can bypass access controls
+- Error responses — verbose errors often leak server software versions and stack traces</p>
+<p><strong>Key Areas in Burp:</strong>
+- <strong>HTTP History</strong> (<code>Proxy &gt; HTTP History</code>) — full log of all intercepted requests
+- <strong>Site Map</strong> (<code>Target &gt; Site Map</code>) — visual tree of discovered endpoints
+- <strong>Scope</strong> (<code>Target &gt; Scope</code>) — restrict Burp activity to your authorized target only</p>
+<hr />
+<h2 id="step-3-scanning-with-burp-scanner-pro">Step 3: Scanning with Burp Scanner (Pro)</h2>
+<p>Burp Suite Pro includes an automated crawler and vulnerability scanner:</p>
+<ul>
+<li>Right-click any target in the Site Map and select <strong>Scan</strong> to launch</li>
+<li>Configure scan type: <strong>Crawl and Audit</strong>, <strong>Crawl only</strong>, or <strong>Audit selected items</strong></li>
+<li>Review scanner findings under <strong>Dashboard &gt; Issue activity</strong></li>
+</ul>
+<p><strong>Burp Scanner Detects:</strong>
+- SQL injection (A03:2021)
+- Cross-site scripting — reflected, stored, and DOM-based (A03:2021)
+- Security misconfigurations — CORS, clickjacking headers, TLS issues (A05:2021)
+- Sensitive data exposure — credentials in responses, directory listings (A02:2021)
+- SSRF — internal service requests triggered by user input (A10:2021)</p>
+<blockquote>
+<p><strong>Note:</strong> Burp Community edition does not include the automated scanner. Manual testing techniques in the following steps apply to both Community and Pro.</p>
+</blockquote>
+<hr />
+<h2 id="step-4-manual-vulnerability-testing">Step 4: Manual Vulnerability Testing</h2>
+<p>Automated scanners miss business logic flaws, authorization issues, and chained vulnerabilities. Manual testing covers what automation cannot:</p>
+<h3 id="sql-injection-a032021">SQL Injection (A03:2021)</h3>
+<p>Inject SQL syntax into input fields, URL parameters, headers, and cookies:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a># Basic detection payloads
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&#39;
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>&#39;&#39;
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>&#39; OR &#39;1&#39;=&#39;1
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>&#39; OR 1=1--
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>&#39; UNION SELECT NULL--
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a># Send to Repeater, modify, and observe response differences
+</code></pre></div>
+<ul>
+<li>Use <strong>Repeater</strong> to craft and replay modified requests</li>
+<li>Look for database error messages, changed response sizes, or boolean behavior differences</li>
+<li>Use <strong>sqlmap</strong> to automate exploitation once injection is confirmed</li>
+</ul>
+<h3 id="cross-site-scripting-a032021">Cross-Site Scripting (A03:2021)</h3>
+<p>Test all user-controlled input that appears in HTML responses:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a># Basic XSS payloads
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>&lt;script&gt;alert(1)&lt;/script&gt;
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>&lt;img src=x onerror=alert(1)&gt;
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>javascript:alert(1)
+</code></pre></div>
+<ul>
+<li>Use Burp's <strong>DOM Invader</strong> (built-in browser tool) to detect DOM-based XSS</li>
+<li>Check reflected input in headers, error messages, and search results</li>
+<li>Test stored XSS in comment fields, profile data, and any persisted user input</li>
+</ul>
+<h3 id="broken-access-control-a012021">Broken Access Control (A01:2021)</h3>
+<p>Test whether authorization is properly enforced:</p>
+<ul>
+<li>Log in as a low-privilege user and capture requests to sensitive endpoints</li>
+<li>Use <strong>Burp Comparer</strong> to diff responses between privilege levels</li>
+<li>Modify user IDs, account numbers, and object references in requests (IDOR testing)</li>
+<li>Test horizontal and vertical privilege escalation separately</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a># Example: Change the user ID in a request and see if another user&#39;s data is returned
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>GET /api/user/1001/profile → change to /api/user/1002/profile
+</code></pre></div>
+<ul>
+<li>Install the <strong>Autorize</strong> Burp extension for automated IDOR detection across user roles</li>
+</ul>
+<h3 id="authentication-failures-a072021">Authentication Failures (A07:2021)</h3>
+<p>Test login mechanisms and session management:</p>
+<ul>
+<li>Send login requests to <strong>Intruder</strong> for credential stuffing or brute-force testing</li>
+<li>Check if account lockout is enforced after failed attempts</li>
+<li>Inspect session token entropy — use <strong>Sequencer</strong> to analyze randomness</li>
+<li>Test password reset flows for token predictability and expiration</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Intruder attack types for credential testing
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Sniper — single payload position (username or password wordlist)
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Cluster bomb — multiple payload sets (username + password combo lists)
+</code></pre></div>
+<h3 id="ssrf-a102021">SSRF (A10:2021)</h3>
+<p>Look for parameters that accept URLs or IP addresses as input:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># Test for internal service access
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>?url=http://127.0.0.1/admin
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>?url=http://169.254.169.254/latest/meta-data/   # AWS metadata endpoint
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>?redirect=http://internal-server.local/
+</code></pre></div>
+<ul>
+<li>Use Burp Collaborator (Pro) to detect out-of-band SSRF where responses are not directly visible</li>
+<li>Test all URL parameters, <code>Referer</code> headers, and XML/JSON fields containing hostnames</li>
+</ul>
+<hr />
+<h2 id="step-5-using-burp-intruder-for-fuzzing">Step 5: Using Burp Intruder for Fuzzing</h2>
+<p>Intruder automates payload injection across parameterized requests:</p>
+<ol>
+<li>Capture a request in Proxy and send it to <strong>Intruder</strong> (<code>Ctrl+I</code>)</li>
+<li>Highlight payload positions with <code>§</code> markers</li>
+<li>Select attack type and load a payload wordlist</li>
+<li>Launch attack and analyze responses by status code, length, and content</li>
+</ol>
+<p><strong>Useful Intruder Payloads:</strong>
+- Directory and file wordlists (from SecLists) — discover hidden endpoints
+- Common password lists — credential brute-force against login forms
+- Special characters — injection and fuzzing payloads
+- IDOR numeric sequences — test object reference enumeration</p>
+<blockquote>
+<p><strong>Note:</strong> Burp Community throttles Intruder speed. Use <strong>ffuf</strong> or <strong>feroxbuster</strong> for large-scale fuzzing and reserve Intruder for targeted manual attacks.</p>
+</blockquote>
+<hr />
+<h2 id="step-6-burp-repeater-for-manual-exploitation">Step 6: Burp Repeater for Manual Exploitation</h2>
+<p>Repeater is the most-used Burp tool for hands-on vulnerability validation:</p>
+<ul>
+<li>Send any intercepted request to Repeater (<code>Ctrl+R</code>)</li>
+<li>Modify headers, parameters, cookies, and body content freely</li>
+<li>Compare responses side-by-side to understand application behavior</li>
+<li>Chain multiple requests to test multi-step attack flows</li>
+</ul>
+<p><strong>Common Repeater Workflows:</strong>
+- Confirm SQL injection by observing database errors or data leakage
+- Test authentication bypass by manipulating session tokens
+- Exploit broken object-level authorization by swapping user identifiers
+- Reproduce and document confirmed vulnerabilities for reporting</p>
+<hr />
+<h2 id="step-7-reporting-findings">Step 7: Reporting Findings</h2>
+<p>Document each finding with enough detail to reproduce and remediate:</p>
+<ul>
+<li>Capture the exact request and response that demonstrates the vulnerability</li>
+<li>Use Burp's <strong>Logger</strong> or right-click any request to copy as <code>curl</code> for reproduction steps</li>
+<li>Map findings to OWASP Top 10 categories and assign risk ratings</li>
+<li>Include remediation guidance alongside each finding</li>
+</ul>
+<p><strong>Finding Documentation Template:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Title</td>
+<td>Reflected XSS in Search Parameter</td>
+</tr>
+<tr>
+<td>OWASP Category</td>
+<td>A03:2021 – Injection</td>
+</tr>
+<tr>
+<td>Severity</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Endpoint</td>
+<td><code>GET /search?q=&lt;payload&gt;</code></td>
+</tr>
+<tr>
+<td>Proof of Concept</td>
+<td>Request/response screenshots</td>
+</tr>
+<tr>
+<td>Impact</td>
+<td>Session hijacking, credential theft</td>
+</tr>
+<tr>
+<td>Remediation</td>
+<td>Input sanitization, Content-Security-Policy header</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="integrating-burp-suite-into-the-broader-workflow">Integrating Burp Suite Into the Broader Workflow</h2>
+<p>Burp Suite is the web application layer of your full testing pipeline:</p>
+<ul>
+<li><strong>Nmap</strong> identifies web servers on ports 80, 443, 8080, 8443 — these become your Burp targets</li>
+<li><strong>Tenable</strong> may flag outdated web server versions — use Burp to validate whether those versions are actually exploitable via the application layer</li>
+<li><strong>Metasploit</strong> can take over after Burp confirms a web vulnerability — use <code>auxiliary/scanner/http/</code> modules to extend coverage or deliver payloads post-exploitation</li>
+<li><strong>OWASP Top 10</strong> provides the classification framework — map every Burp finding to its OWASP category when reporting</li>
+</ul>
+<hr />
+<h2 id="tools-resources">Tools &amp; Resources</h2>
+<ul>
+<li><strong><a href="https://portswigger.net/burp">Burp Suite Community / Pro</a></strong> — Download and documentation</li>
+<li><strong><a href="https://portswigger.net/web-security">PortSwigger Web Security Academy</a></strong> — Free hands-on labs for every OWASP category, built by the Burp Suite team</li>
+<li><strong><a href="https://owasp.org/www-project-web-security-testing-guide/">OWASP Testing Guide</a></strong> — Comprehensive manual testing methodology</li>
+<li><strong><a href="https://github.com/PortSwigger/autorize">Autorize Extension</a></strong> — Automated authorization testing across user roles</li>
+<li><strong><a href="https://github.com/danielmiessler/SecLists">SecLists</a></strong> — Payload and wordlist collection for Intruder and fuzzing</li>
+<li><strong><a href="https://portswigger.net/burp/documentation/desktop/tools/dom-invader">DOM Invader</a></strong> — Built-in DOM XSS detection tool</li>
+</ul>
+<hr />
+<h2 id="important-ethical-considerations">Important Ethical Considerations</h2>
+<ul>
+<li>Only test web applications you own or have explicit written permission to assess</li>
+<li>Automated scanning and fuzzing can cause unintended data modification — confirm scope and acceptable test intensity with the client before running</li>
+<li>Avoid testing in production environments when a staging or dev environment is available</li>
+<li>Credential brute-forcing against live login forms can lock out legitimate users — coordinate timing with the client</li>
+</ul>
+<hr />
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>Burp Suite bridges the gap between network-level vulnerability data and real application risk. Tenable will tell you a web server is running an outdated framework — Burp Suite tells you whether that framework is actually exploitable through the application, and where the business logic breaks down in ways no automated scanner would catch. Combined with Nmap for reconnaissance and Metasploit for post-exploitation validation, Burp Suite completes the full attack chain assessment for any web-facing target.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

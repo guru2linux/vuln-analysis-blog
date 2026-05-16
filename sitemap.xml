@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/index.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/burp-suite-web-testing.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/job-tracker-vuln-analysis.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/metasploit-framework-guide.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/nmap-scanning-guide.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/owasp-top-10-vulnerability-analysis.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/vulnerability-analysis-tenable.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://guru2linux.github.io/vuln-analysis-blog/wazuh-setup-proxmox.html</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+</urlset>

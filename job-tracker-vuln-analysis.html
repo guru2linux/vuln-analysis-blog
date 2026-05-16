@@ -1,0 +1,1245 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Applying real-world vulnerability analysis techniques to a personal Python project — a Gmail-integrated job application tracker built with SQLAlchemy, Dash, and the Google API.">
+      
+      
+      
+        <link rel="canonical" href="https://guru2linux.github.io/vuln-analysis-blog/job-tracker-vuln-analysis.html">
+      
+      
+        <link rel="prev" href="index.html">
+      
+      
+        <link rel="next" href="vulnerability-analysis-tenable.html">
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Security Analysis of a Python Job Application Tracker - Vulnerability Analysis Blog</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="assets/css/style.css">
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#security-analysis-of-a-python-job-application-tracker" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Vulnerability Analysis Blog" class="md-header__button md-logo" aria-label="Vulnerability Analysis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Vulnerability Analysis Blog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Security Analysis of a Python Job Application Tracker
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="index.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="job-tracker-vuln-analysis.html" class="md-tabs__link">
+          
+  
+  
+  Guides
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Vulnerability Analysis Blog" class="md-nav__button md-logo" aria-label="Vulnerability Analysis Blog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Vulnerability Analysis Blog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security Analysis of a Python Job Application Tracker
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="job-tracker-vuln-analysis.html" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security Analysis of a Python Job Application Tracker
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threat-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threat Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-1-credential-exposure-via-accidental-git-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 1 — Credential Exposure via Accidental Git Commit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-2-dash-dashboard-has-no-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 2 — Dash Dashboard Has No Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-3-unpinned-dependencies-with-known-vulnerability-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 3 — Unpinned Dependencies with Known Vulnerability Surface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-4-csv-ingestion-without-input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 4 — CSV Ingestion Without Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-5-oauth-token-stored-as-world-readable-file-partially-mitigated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 5 — OAuth Token Stored as World-Readable File (Partially Mitigated)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-was-done-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Done Well
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioritized-remediation-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritized Remediation Plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="vulnerability-analysis-tenable.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How I Analyze Vulnerabilities Using Tenable
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="owasp-top-10-vulnerability-analysis.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Using OWASP Top 10 for Vulnerability Analysis
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="metasploit-framework-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metasploit Framework Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="wazuh-setup-proxmox.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Setting Up Wazuh on Proxmox
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="nmap-scanning-guide.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Nmap Scanning Techniques
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="burp-suite-web-testing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Burp Suite Web Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threat-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threat Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-1-credential-exposure-via-accidental-git-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 1 — Credential Exposure via Accidental Git Commit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-2-dash-dashboard-has-no-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 2 — Dash Dashboard Has No Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-3-unpinned-dependencies-with-known-vulnerability-surface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 3 — Unpinned Dependencies with Known Vulnerability Surface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-4-csv-ingestion-without-input-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 4 — CSV Ingestion Without Input Validation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#finding-5-oauth-token-stored-as-world-readable-file-partially-mitigated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Finding 5 — OAuth Token Stored as World-Readable File (Partially Mitigated)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-was-done-well" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Was Done Well
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prioritized-remediation-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prioritized Remediation Plan
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lessons-learned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lessons Learned
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="security-analysis-of-a-python-job-application-tracker">Security Analysis of a Python Job Application Tracker</h1>
+<h2 id="overview">Overview</h2>
+<p>One of the best ways to sharpen your vulnerability analysis skills is to turn the lens on your own projects. I recently built a personal job application tracker in Python that automatically monitors my Gmail inbox, parses application status emails, stores records in a MySQL database, and visualizes everything in a Dash dashboard. It's a practical tool — but it's also a useful target for a real security assessment.</p>
+<p>This post walks through applying the same vulnerability analysis methodology I use professionally (OWASP Top 10, threat modeling, CVSS-informed prioritization) to this project, covering real findings and concrete remediations.</p>
+<hr />
+<h2 id="project-architecture">Project Architecture</h2>
+<p>Before analyzing vulnerabilities, understanding the attack surface is essential.</p>
+<p><strong>Stack:</strong>
+- <strong>Data layer:</strong> MySQL via SQLAlchemy + PyMySQL, seeded from CSV or live Gmail polling
+- <strong>Email integration:</strong> Gmail API (OAuth 2.0) via <code>google-api-python-client</code>
+- <strong>Analysis:</strong> Pandas, Scikit-learn, Jupyter Notebooks
+- <strong>Visualization:</strong> Plotly Dash dashboard with Bootstrap components
+- <strong>Config:</strong> <code>.env</code> file loaded via <code>python-dotenv</code></p>
+<p><strong>Data flow:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Gmail Inbox → email_monitor.py (OAuth) → email_parser.py (regex) → db.py (SQLAlchemy) → MySQL
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>CSV files   → ingest.py (pandas)       → db.py                   → MySQL
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                                                                     ↓
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                                          dashboards/app.py (Dash)
+</code></pre></div></p>
+<p><strong>Sensitive assets at a glance:</strong>
+| Asset | Location | Sensitivity |
+|---|---|---|
+| DB credentials | <code>.env</code> | High |
+| Gmail OAuth credentials | <code>config/gmail_credentials.json</code> | Critical |
+| Gmail OAuth token | <code>config/gmail_token.json</code> | Critical |
+| Application data (PII) | MySQL <code>applications</code> table | Medium |
+| Raw CSV imports | <code>data/raw/</code> | Medium |</p>
+<hr />
+<h2 id="threat-model">Threat Model</h2>
+<p><strong>Threat actors considered:</strong>
+- Attacker with read access to the filesystem (e.g., misconfigured file share, stolen laptop)
+- Attacker with network access to the MySQL host
+- Attacker who obtains the repository (e.g., accidental public push)</p>
+<p><strong>Primary concerns:</strong>
+1. Credential / token exposure
+2. Unauthorized database access
+3. Vulnerable dependencies
+4. Dash dashboard without authentication
+5. Unsafe file ingestion</p>
+<hr />
+<h2 id="finding-1-credential-exposure-via-accidental-git-commit">Finding 1 — Credential Exposure via Accidental Git Commit</h2>
+<p><strong>OWASP:</strong> A02:2021 – Cryptographic Failures<br />
+<strong>Severity:</strong> Critical (CVSS 9.1)</p>
+<p>The most dangerous finding has nothing to do with runtime behavior — it's the risk of committing secrets to version control. The project stores three sensitive files that would be catastrophic if pushed to a public repository:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>config/gmail_credentials.json   ← Google OAuth client ID + secret
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>config/gmail_token.json         ← Live access + refresh token for your Gmail account
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>.env                            ← DB_USER, DB_PASSWORD, DB_HOST
+</code></pre></div>
+<p><code>settings.py</code> constructs the database URL directly from environment variables:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">DATABASE_URL</span> <span class="o">=</span> <span class="p">(</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="sa">f</span><span class="s2">&quot;mysql+pymysql://</span><span class="si">{</span><span class="n">DB_USER</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">DB_PASSWORD</span><span class="si">}</span><span class="s2">&quot;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">DB_HOST</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">DB_PORT</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">DB_NAME</span><span class="si">}</span><span class="s2">?charset=utf8mb4&quot;</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="p">)</span>
+</code></pre></div>
+<p>If <code>DB_HOST</code> has a hardcoded default pointing to a real host and that IP is reachable, an attacker with the <code>.env</code> file has full database access. If <code>gmail_token.json</code> leaks, they have read access to your entire Gmail inbox — including every job offer, salary negotiation, and personal email.</p>
+<p><strong>Remediations:</strong>
+1. Add all three to <code>.gitignore</code> immediately:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>.env
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>config/gmail_credentials.json
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>config/gmail_token.json
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>data/raw/
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>data/processed/
+</code></pre></div>
+2. Rotate the Google OAuth credentials in Google Cloud Console if there's any chance they were ever committed.
+3. Remove the hardcoded <code>DB_HOST</code> default — fail loudly if the variable is absent rather than defaulting to a real IP:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">DB_HOST</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_HOST&#39;</span><span class="p">)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">DB_HOST</span><span class="p">:</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">raise</span> <span class="ne">EnvironmentError</span><span class="p">(</span><span class="s2">&quot;DB_HOST is not set&quot;</span><span class="p">)</span>
+</code></pre></div>
+4. Consider using a secrets manager (Vault, AWS Secrets Manager, or even <code>keyring</code>) rather than plaintext <code>.env</code> files for production use.</p>
+<hr />
+<h2 id="finding-2-dash-dashboard-has-no-authentication">Finding 2 — Dash Dashboard Has No Authentication</h2>
+<p><strong>OWASP:</strong> A01:2021 – Broken Access Control<br />
+<strong>Severity:</strong> High (CVSS 7.5)</p>
+<p>The Dash application (<code>dashboards/app.py</code>) runs as a standard Flask/Dash server. By default, Dash exposes the app on <code>0.0.0.0</code> with no authentication layer. Anyone on the local network who knows the port can view all job application data, including companies, roles, salary stages, and notes.</p>
+<p>On a home network this may seem low risk, but consider:
+- The MySQL host is at a static LAN IP — suggesting it's a reachable home server
+- A guest device or a compromised device on the same network gets full dashboard access
+- If the machine is ever port-forwarded or on a VPN, exposure widens significantly</p>
+<p><strong>Remediations:</strong>
+1. Bind the Dash server to <code>127.0.0.1</code> only for local use:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8050</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+2. For network access, add HTTP Basic Auth using <code>dash-auth</code> or Flask's <code>flask-login</code>:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">dash_auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasicAuth</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">VALID_USERNAME_PASSWORD_PAIRS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DASH_PASSWORD&#39;</span><span class="p">)}</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">auth</span> <span class="o">=</span> <span class="n">BasicAuth</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">VALID_USERNAME_PASSWORD_PAIRS</span><span class="p">)</span>
+</code></pre></div>
+3. Add <code>DASH_PASSWORD</code> to <code>.env</code> rather than hardcoding credentials.</p>
+<hr />
+<h2 id="finding-3-unpinned-dependencies-with-known-vulnerability-surface">Finding 3 — Unpinned Dependencies with Known Vulnerability Surface</h2>
+<p><strong>OWASP:</strong> A06:2021 – Vulnerable and Outdated Components<br />
+<strong>Severity:</strong> Medium (CVSS 6.5)</p>
+<p><code>requirements.txt</code> lists every dependency without version pins:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pandas
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>sqlalchemy
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>pymysql
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>plotly
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>dash
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>scikit-learn
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>google-api-python-client
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>...
+</code></pre></div>
+<p>This means <code>pip install -r requirements.txt</code> always installs the latest version — which sounds safe but introduces real risks:
+- A dependency may release a breaking or malicious version (supply chain attack)
+- You cannot reproduce the exact environment used when the project was last known-good
+- <code>pip audit</code> cannot check for CVEs without pinned versions to look up</p>
+<p>In early 2025, the <code>requests</code> package ecosystem saw several typosquatting incidents. The <code>dash</code> and <code>flask</code> ecosystem has had multiple CVEs related to CORS misconfigurations and debug mode exposure.</p>
+<p><strong>Remediations:</strong>
+1. Pin all dependencies after a clean install:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>pip<span class="w"> </span>freeze<span class="w"> </span>&gt;<span class="w"> </span>requirements.txt
+</code></pre></div>
+2. Run <code>pip audit</code> or integrate <code>safety check</code> into your workflow:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>pip<span class="w"> </span>install<span class="w"> </span>pip-audit
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>pip-audit<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+3. Use a virtual environment with a lockfile (Poetry or <code>pip-compile</code> from <code>pip-tools</code>) for reproducible installs.</p>
+<hr />
+<h2 id="finding-4-csv-ingestion-without-input-validation">Finding 4 — CSV Ingestion Without Input Validation</h2>
+<p><strong>OWASP:</strong> A08:2021 – Software and Data Integrity Failures<br />
+<strong>Severity:</strong> Medium (CVSS 5.4)</p>
+<p><code>ingest.py</code> reads arbitrary CSV files from the filesystem and inserts their contents into MySQL. While the code does truncate string fields (e.g., <code>company[:100]</code>) and validates the <code>status</code> field against a whitelist, there are gaps:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">ingest_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span>           <span class="c1"># No file type verification</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>  <span class="c1"># Column names from file are trusted</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="o">...</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">execute</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s2">        INSERT IGNORE INTO applications (date_applied, company, role, status, notes)</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s2">        VALUES (:date_applied, :company, :role, :status, :notes)</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s2">    &quot;&quot;&quot;</span><span class="p">,</span> <span class="p">{</span> <span class="o">...</span> <span class="p">})</span>                        <span class="c1"># Parameterized — SQL injection not possible</span>
+</code></pre></div>
+<p>The SQL itself is safe — parameterized queries via SQLAlchemy's <code>text()</code> with bound parameters prevent SQL injection. However:
+- A crafted CSV could supply a <code>notes</code> field with 500 characters of XSS payload that renders in the Dash dashboard
+- A malicious CSV could supply a <code>date_applied</code> value that causes unexpected behavior in date parsing
+- There is no verification that the file is actually a CSV (e.g., a zip bomb or a file with a <code>.csv</code> extension containing binary data)</p>
+<p><strong>Remediations:</strong>
+1. Sanitize the <code>notes</code> field — strip HTML tags before storage:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">html</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">notes</span> <span class="o">=</span> <span class="n">html</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;notes&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)))[:</span><span class="mi">500</span><span class="p">]</span>
+</code></pre></div>
+2. Validate date format strictly:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>    <span class="n">date_val</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;date_applied&#39;</span><span class="p">]),</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="k">continue</span>  <span class="c1"># Skip malformed rows</span>
+</code></pre></div>
+3. Add a file size check before reading with pandas — prevent processing unexpectedly large files.</p>
+<hr />
+<h2 id="finding-5-oauth-token-stored-as-world-readable-file-partially-mitigated">Finding 5 — OAuth Token Stored as World-Readable File (Partially Mitigated)</h2>
+<p><strong>OWASP:</strong> A02:2021 – Cryptographic Failures<br />
+<strong>Severity:</strong> Medium (CVSS 5.9)</p>
+<p><code>email_monitor.py</code> saves the Gmail OAuth token after the first auth flow:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">TOKEN_FILE</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">creds</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">TOKEN_FILE</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="mo">0o600</span><span class="p">)</span>     <span class="c1"># ← Good: owner-only read/write</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Token saved to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">TOKEN_FILE</span><span class="p">)</span>
+</code></pre></div>
+<p>The <code>chmod(0o600)</code> is a positive security control — it restricts the token file to the owner only. However:
+- The token is stored in plaintext JSON — any process running as the same user can read it
+- If the refresh token leaks, it can generate new access tokens indefinitely until revoked
+- The token file path (<code>config/gmail_token.json</code>) is inside the project directory, adjacent to code that may be shared or synced</p>
+<p><strong>Remediations:</strong>
+1. Store the token outside the project directory (e.g., <code>~/.config/job_tracker/gmail_token.json</code>)
+2. Consider encrypting the token at rest using the system keychain:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">keyring</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">keyring</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="s2">&quot;job_tracker&quot;</span><span class="p">,</span> <span class="s2">&quot;gmail_token&quot;</span><span class="p">,</span> <span class="n">creds</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
+</code></pre></div>
+3. Implement token revocation on application exit for sensitive workflows.</p>
+<hr />
+<h2 id="what-was-done-well">What Was Done Well</h2>
+<p>Not every finding is a problem — good security practices deserve recognition:</p>
+<table>
+<thead>
+<tr>
+<th>Practice</th>
+<th>Code Location</th>
+<th>Why It Matters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parameterized SQL queries</td>
+<td><code>db.py</code>, <code>ingest.py</code></td>
+<td>Prevents SQL injection completely</td>
+</tr>
+<tr>
+<td>Status field allowlist</td>
+<td><code>ingest.py</code></td>
+<td>Prevents unexpected values from entering the DB</td>
+</tr>
+<tr>
+<td>OAuth <code>gmail.readonly</code> scope only</td>
+<td><code>email_monitor.py</code></td>
+<td>Limits blast radius if token is compromised</td>
+</tr>
+<tr>
+<td>Token file <code>chmod(0o600)</code></td>
+<td><code>email_monitor.py</code></td>
+<td>Restricts filesystem access to owner</td>
+</tr>
+<tr>
+<td><code>.env</code> for credentials</td>
+<td><code>config/settings.py</code></td>
+<td>Avoids hardcoding secrets in source</td>
+</tr>
+<tr>
+<td>Field length truncation</td>
+<td><code>ingest.py</code></td>
+<td>Prevents oversized inserts</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="prioritized-remediation-plan">Prioritized Remediation Plan</h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Finding</th>
+<th>Effort</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0</td>
+<td>Add secrets to <code>.gitignore</code>, rotate if committed</td>
+<td>5 min</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>Bind Dash to <code>127.0.0.1</code> or add basic auth</td>
+<td>15 min</td>
+<td>High</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Pin dependencies + add <code>pip-audit</code></td>
+<td>20 min</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Sanitize <code>notes</code> field (HTML escape)</td>
+<td>10 min</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Move token file outside project dir</td>
+<td>10 min</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Add hard failure on missing env vars</td>
+<td>5 min</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="lessons-learned">Lessons Learned</h2>
+<p>Personal projects are easy to treat as "low stakes" from a security perspective — but they often have the most sensitive access of anything you run. This tracker has OAuth access to a Gmail inbox containing salary negotiations, offer letters, and background check confirmations. That warrants the same rigor as any professional system.</p>
+<p>The key takeaways from this analysis:</p>
+<ol>
+<li><strong>Your <code>.gitignore</code> is a security control.</strong> Treat it as one.</li>
+<li><strong>Parameterized queries matter</strong> — even in personal projects, they're the right habit.</li>
+<li><strong>Principle of least privilege</strong> applies to OAuth scopes, not just IAM roles.</li>
+<li><strong>Dependency pinning is both a stability and a security practice.</strong></li>
+<li><strong>Local network ≠ trusted network</strong> — bind services explicitly.</li>
+</ol>
+<p>The same methodology used here — threat modeling, OWASP mapping, CVSS-informed prioritization, and concrete remediation steps — applies directly to enterprise vulnerability programs. The scale changes; the framework doesn't.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
